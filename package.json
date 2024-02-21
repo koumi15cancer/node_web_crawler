@@ -1,0 +1,12 @@
+{
+  "name": "node_web_crawler",
+  "version": "1.0.0",
+  "description": "Web Crawler in Nodejs",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "test"
+  },
+  "author": "koumi",
+  "license": "ISC"
+}
