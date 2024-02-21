@@ -5,8 +5,11 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "test"
+    "test": "jest"
   },
   "author": "koumi",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
