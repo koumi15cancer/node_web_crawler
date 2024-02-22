@@ -75,7 +75,6 @@ async function crawlPage(baseURL,currentURL,pages){
   }
 
   // fetch and parse the html of the currentURL
-  console.log(`crawling ${normalUrl}`)
   let strBody = ''
   try {
     const resp = await fetch(currentURL)
@@ -101,17 +100,13 @@ async function crawlPage(baseURL,currentURL,pages){
 
   return pages
 
-  
-
-
 
 }
 
 
-
 module.exports = {
+  crawlPage,
   normalizeURL,
-  getURLsFromHTML,
-  crawlPage
+  getURLsFromHTML
 };
 
