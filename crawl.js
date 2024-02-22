@@ -1,6 +1,7 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
+
 function normalizeURL(urlString) {
   try {
     const urlObj = new URL(urlString)
@@ -42,24 +43,68 @@ function getURLsFromHTML(htmlBody, baseURL) {
 
 };
 
-async function crawlPage(currentURL){
+async function crawlPage(baseURL,currentURL,pages){
+
+  const base = new URL(baseURL)
+  const current = new URL(currentURL)
+
+  // Verify if base and current url same domain
+  if (base.hostname !== current.hostname) {
+    return pages
+  }
+
+  // normalize current url 
+  const normalUrl = normalizeURL(currentURL);
+
+
+  // if we've already visited this page
+  // just increase the count and don't repeat
+  // the http request
+  if (pages[normalUrl] > 0){
+    pages[normalUrl]++
+    return pages
+  }
+
+   // initialize this page in the map
+  // since it doesn't exist yet
+  if (currentURL === baseURL){
+    // don't count the base URL as a link to itself
+    pages[normalUrl] = 0
+  } else {
+    pages[normalUrl] = 1
+  }
+
   // fetch and parse the html of the currentURL
-  console.log(`crawling ${currentURL}`)
+  console.log(`crawling ${normalUrl}`)
+  let strBody = ''
   try {
     const resp = await fetch(currentURL)
     if (resp.status > 399){
       console.log(`Got HTTP error, status code: ${resp.status}`)
-      return
+      return pages
     }
     const contentType = resp.headers.get('content-type')
     if (!contentType.includes('text/html')){
       console.log(`Got non-html response: ${contentType}`)
-      return
+      return pages
     }
-    console.log(await resp.text())
+    strBody = await resp.text()
+
   } catch (err){
     console.log(err.message)
   }
+
+  const leftUrls = getURLsFromHTML(strBody,base)
+  for (const nextURL of leftUrls){
+    pages = await crawlPage(baseURL, nextURL, pages)
+  }
+
+  return pages
+
+  
+
+
+
 }
 
 
